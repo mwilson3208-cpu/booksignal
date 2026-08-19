@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222 34% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 34% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 34% 12%;
+
+    /* Single accent colour for the whole product. */
+    --primary: 221 74% 46%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 22% 96%;
+    --secondary-foreground: 222 34% 12%;
+
+    --muted: 220 22% 96%;
+    --muted-foreground: 220 12% 44%;
+
+    --accent: 220 22% 96%;
+    --accent-foreground: 222 34% 12%;
+
+    --destructive: 0 72% 48%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 16% 90%;
+    --input: 220 16% 90%;
+    --ring: 221 74% 46%;
+
+    --verdict-go: 152 62% 30%;
+    --verdict-go-soft: 152 58% 94%;
+    --verdict-maybe: 36 88% 34%;
+    --verdict-maybe-soft: 40 92% 94%;
+    --verdict-skip: 0 68% 44%;
+    --verdict-skip-soft: 0 82% 96%;
+
+    --radius: 0.65rem;
+  }
+
+  .dark {
+    --background: 222 40% 7%;
+    --foreground: 210 20% 96%;
+
+    --card: 222 34% 10%;
+    --card-foreground: 210 20% 96%;
+
+    --popover: 222 34% 10%;
+    --popover-foreground: 210 20% 96%;
+
+    --primary: 217 84% 62%;
+    --primary-foreground: 222 40% 7%;
+
+    --secondary: 220 20% 16%;
+    --secondary-foreground: 210 20% 96%;
+
+    --muted: 220 20% 16%;
+    --muted-foreground: 218 12% 65%;
+
+    --accent: 220 20% 16%;
+    --accent-foreground: 210 20% 96%;
+
+    --destructive: 0 62% 46%;
+    --destructive-foreground: 210 20% 96%;
+
+    --border: 220 18% 20%;
+    --input: 220 18% 20%;
+    --ring: 217 84% 62%;
+
+    --verdict-go: 152 52% 60%;
+    --verdict-go-soft: 152 40% 14%;
+    --verdict-maybe: 40 86% 62%;
+    --verdict-maybe-soft: 38 50% 14%;
+    --verdict-skip: 0 72% 66%;
+    --verdict-skip-soft: 0 44% 15%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+  /* Tabular figures everywhere numbers matter. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  .section {
+    @apply py-16 sm:py-24;
+  }
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.14em] text-primary;
+  }
+  .h1 {
+    @apply text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl;
+  }
+  .h2 {
+    @apply text-3xl font-semibold tracking-tight sm:text-4xl;
+  }
+  .lede {
+    @apply text-lg leading-relaxed text-muted-foreground sm:text-xl;
+  }
+}
