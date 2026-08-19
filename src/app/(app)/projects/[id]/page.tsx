@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { VerdictBadge } from '@/components/report/verdict-badge';
 import { PageHeader } from '@/components/app/page-header';
+import { DeleteButton } from '@/components/app/delete-button';
+import { deleteProject } from '@/lib/actions/projects';
 import { createClient } from '@/lib/supabase/server';
 import { formatDate, formatNumber } from '@/lib/utils';
 import type { Project, SavedCompetitor, SavedIdea, ValidationRow } from '@/lib/supabase/types';
@@ -74,12 +76,24 @@ export default async function ProjectDetailPage({ params }: Props) {
         title={project.name}
         description={project.description ?? undefined}
         actions={
-          <Button asChild>
-            <Link href="/tools/topic-explorer">
-              <Radar className="h-4 w-4" />
-              Validate a topic
-            </Link>
-          </Button>
+          <>
+            <DeleteButton
+              name={project.name}
+              description="The project is removed. The validations, competitors and ideas filed in it are kept and simply become unfiled."
+              action={async () => {
+                'use server';
+                await deleteProject(project.id);
+              }}
+              redirectTo="/projects"
+              label="Delete project"
+            />
+            <Button asChild>
+              <Link href="/tools/topic-explorer">
+                <Radar className="h-4 w-4" />
+                Validate a topic
+              </Link>
+            </Button>
+          </>
         }
       />
 

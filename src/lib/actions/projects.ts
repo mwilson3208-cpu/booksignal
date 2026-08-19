@@ -43,11 +43,3 @@ export async function deleteProject(id: string) {
   await supabase.from('projects').delete().eq('id', id);
   revalidatePath('/projects');
 }
-
-export async function renameProject(id: string, name: string) {
-  const supabase = createClient();
-  if (!supabase) return;
-  await supabase.from('projects').update({ name: name.trim().slice(0, 120) }).eq('id', id);
-  revalidatePath('/projects');
-  revalidatePath(`/projects/${id}`);
-}

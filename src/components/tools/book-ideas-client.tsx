@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,12 +8,19 @@ import { Input } from '@/components/ui/input';
 import { CopyButton } from './copy-button';
 import { generateBookIdeas, type BookIdea } from '@/lib/tools/book-ideas';
 import { formatNumber } from '@/lib/utils';
+import { SaveIdeaButton } from '@/components/app/save-idea-button';
 
-export function BookIdeasClient() {
-  const params = useSearchParams();
-  const [topic, setTopic] = useState(params.get('topic') ?? '');
+export function BookIdeasClient({
+  projects = [],
+  initialTopic = '',
+}: {
+  projects?: { id: string; name: string }[];
+  /** Handed over from a validated report, so the topic never has to be retyped. */
+  initialTopic?: string;
+}) {
+  const [topic, setTopic] = useState(initialTopic);
   const [ideas, setIdeas] = useState<BookIdea[]>(() =>
-    params.get('topic') ? generateBookIdeas(params.get('topic')!) : [],
+    initialTopic.trim().length >= 3 ? generateBookIdeas(initialTopic) : [],
   );
 
   return (
@@ -52,7 +58,16 @@ export function BookIdeasClient() {
                 <h3 className="text-lg font-semibold tracking-tight">{idea.title}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">{idea.subtitle}</p>
               </div>
-              <CopyButton value={`${idea.title}: ${idea.subtitle}`} label="Copy title" />
+              <div className="flex shrink-0 gap-2">
+                <CopyButton value={`${idea.title}: ${idea.subtitle}`} label="Copy title" />
+                <SaveIdeaButton
+                  kind="book_idea"
+                  title={idea.title}
+                  payload={idea as unknown as Record<string, unknown>}
+                  projects={projects}
+                  label="Save"
+                />
+              </div>
             </div>
 
             <p className="text-sm leading-relaxed">{idea.hook}</p>

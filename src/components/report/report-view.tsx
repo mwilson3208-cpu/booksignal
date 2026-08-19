@@ -9,6 +9,7 @@ import { FactorBreakdown } from './factor-breakdown';
 import { ScoreGauge } from './score-gauge';
 import { VerdictBadge } from './verdict-badge';
 import { CompetitorTable } from './competitor-table';
+import { NextSteps } from './next-steps';
 import { formatCompact, formatCurrency, formatNumber } from '@/lib/utils';
 import { BRAND } from '@/lib/brand';
 import type { ValidationReport } from '@/lib/types';
@@ -272,6 +273,8 @@ export function ReportView({
           </div>
         </CardContent>
       </Card>
+
+      <NextSteps report={report} />
 
       <p className="text-xs leading-relaxed text-muted-foreground">{BRAND.amazonDisclaimer}</p>
     </div>

@@ -5,7 +5,7 @@ import type {
   RelatedKeyword,
 } from '@/lib/types';
 import { estimateMonthlySalesFromBsr } from '@/lib/scoring/bsr';
-import { createRng, displayTopic, hashString, normalizeTopic, type Rng } from './seed';
+import { createRng, displayTopic, hashString, normalizeTopic, shuffle, type Rng } from './seed';
 
 /**
  * v1 market data layer: a deterministic mock.
@@ -120,7 +120,7 @@ function buildCompetitors(
   marketHeat: number,
   marketVigor: number,
 ): Competitor[] {
-  const patterns = [...TITLE_PATTERNS].sort(() => rng.next() - 0.5);
+  const patterns = shuffle(TITLE_PATTERNS, rng);
   const count = 20;
   // The strongest title's rank anchors the whole page. Vigor — how much money actually
   // moves in this market — drives it, separately from how crowded the shelf is.
@@ -170,7 +170,7 @@ function buildKeywords(
   parentVolume: number,
   marketHeat: number,
 ): RelatedKeyword[] {
-  const modifiers = [...KEYWORD_MODIFIERS].sort(() => rng.next() - 0.5).slice(0, rng.int(8, 12));
+  const modifiers = shuffle(KEYWORD_MODIFIERS, rng).slice(0, rng.int(8, 12));
   return modifiers
     .map((modifier) => {
       const volume = Math.max(40, Math.round(parentVolume * rng.float(0.04, 0.42)));
@@ -192,7 +192,7 @@ function buildKeywords(
 }
 
 function buildCategories(rng: Rng, marketHeat: number): CategorySuggestion[] {
-  const roots = [...CATEGORY_ROOTS].sort(() => rng.next() - 0.5).slice(0, 3);
+  const roots = shuffle(CATEGORY_ROOTS, rng).slice(0, 3);
   return roots.map((path) => ({
     path,
     bsrToTop: Math.round(10 ** rng.float(3.2 - marketHeat, 5.1 - marketHeat * 0.8)),

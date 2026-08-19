@@ -1,11 +1,23 @@
 import type { Metadata } from 'next';
 import { PageHeader } from '@/components/app/page-header';
+import { createClient } from '@/lib/supabase/server';
 import { PreviewNotice } from '@/components/app/preview-notice';
 import { NicheFinderClient } from '@/components/tools/niche-finder-client';
 
 export const metadata: Metadata = { title: 'Niche Finder' };
 
-export default function NicheFinderPage() {
+
+async function loadProjects() {
+  const supabase = createClient();
+  const { data } = (await supabase?.from('projects').select('id, name').order('name')) ?? {
+    data: null,
+  };
+  return (data as { id: string; name: string }[] | null) ?? [];
+}
+
+export default async function NicheFinderPage() {
+  const projects = await loadProjects();
+
   return (
     <>
       <PageHeader
@@ -18,7 +30,7 @@ export default function NicheFinderPage() {
         the same shortlist. Search volumes come from the sample data layer, so validate any
         suggestion in Topic Explorer before you act on it.
       </PreviewNotice>
-      <NicheFinderClient />
+      <NicheFinderClient projects={projects} />
     </>
   );
 }

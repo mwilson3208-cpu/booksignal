@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { ArrowRight } from 'lucide-react';
@@ -6,7 +5,6 @@ import { PageHeader } from '@/components/app/page-header';
 import { TopicExplorerForm } from '@/components/tools/topic-explorer-form';
 import { VerdictBadge } from '@/components/report/verdict-badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
 import { getAccountState } from '@/lib/account/usage';
 import { createClient } from '@/lib/supabase/server';
 import { formatDate } from '@/lib/utils';
@@ -14,7 +12,11 @@ import type { ValidationRow } from '@/lib/supabase/types';
 
 export const metadata: Metadata = { title: 'Topic Explorer' };
 
-export default async function TopicExplorerPage() {
+export default async function TopicExplorerPage({
+  searchParams,
+}: {
+  searchParams: { topic?: string };
+}) {
   const account = await getAccountState();
   const supabase = createClient();
 
@@ -33,9 +35,10 @@ export default async function TopicExplorerPage() {
 
       <Card className="mb-8">
         <CardContent className="pt-6">
-          <Suspense fallback={<Skeleton className="h-12 w-full" />}>
-            <TopicExplorerForm remaining={account?.usage.remaining ?? 0} />
-          </Suspense>
+          <TopicExplorerForm
+            remaining={account?.usage.remaining ?? 0}
+            initialTopic={searchParams.topic ?? ''}
+          />
         </CardContent>
       </Card>
 

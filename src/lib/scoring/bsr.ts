@@ -1,4 +1,3 @@
-import { clamp } from './math';
 
 /**
  * BSR -> sales conversion.
@@ -43,7 +42,13 @@ export function estimateMonthlySalesFromBsr(bsr: number, marketplace: Marketplac
   return Math.round(estimateDailySalesFromBsr(bsr, marketplace) * 30.4);
 }
 
-/** The inverse: what rank would a title holding this many units/day sit at? */
+/**
+ * The inverse: what rank would a title holding this many units/day sit at?
+ *
+ * Not used by a screen. It exists so the curve can be checked against itself — the
+ * round-trip test in engine.test.ts is what proves the piecewise bands join up rather
+ * than stepping at the boundaries.
+ */
 export function estimateBsrFromDailySales(unitsPerDay: number, marketplace: Marketplace = 'kindle') {
   const target = marketplace === 'print' ? unitsPerDay / PRINT_MULTIPLIER : unitsPerDay;
   if (target <= 0) return 5_000_000;
@@ -84,9 +89,4 @@ export function royaltyPerSale(
     return Math.max(0, Math.round((price * rate - delivery) * 100) / 100);
   }
   return Math.round(price * rate * 100) / 100;
-}
-
-/** 0-100 measure of how hard a rank is to hold. Used by the competition factor. */
-export function bsrDifficulty(bsr: number): number {
-  return clamp(100 - Math.log10(Math.max(bsr, 1)) * (100 / Math.log10(1_000_000)));
 }

@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import { ArrowRight, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -11,13 +10,20 @@ import { Label } from '@/components/ui/label';
 import { CopyButton } from './copy-button';
 import { buildSeries, type SeriesBook } from '@/lib/tools/series-builder';
 import { cn, formatNumber } from '@/lib/utils';
+import { SaveIdeaButton } from '@/components/app/save-idea-button';
 
-export function SeriesBuilderClient() {
-  const params = useSearchParams();
-  const [topic, setTopic] = useState(params.get('topic') ?? '');
+export function SeriesBuilderClient({
+  projects = [],
+  initialTopic = '',
+}: {
+  projects?: { id: string; name: string }[];
+  /** Handed over from a validated report, so the topic never has to be retyped. */
+  initialTopic?: string;
+}) {
+  const [topic, setTopic] = useState(initialTopic);
   const [length, setLength] = useState(4);
   const [series, setSeries] = useState<SeriesBook[]>(() =>
-    params.get('topic') ? buildSeries(params.get('topic')!, 4) : [],
+    initialTopic.trim().length >= 3 ? buildSeries(initialTopic, 4) : [],
   );
 
   const asText = series
@@ -77,8 +83,14 @@ export function SeriesBuilderClient() {
 
       {series.length > 0 && (
         <>
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-2">
             <CopyButton value={asText} label="Copy series plan" />
+            <SaveIdeaButton
+              kind="series"
+              title={`${topic.trim()} — ${series.length}-book series`}
+              payload={{ topic: topic.trim(), books: series }}
+              projects={projects}
+            />
           </div>
 
           <div className="relative space-y-4 before:absolute before:bottom-6 before:left-[19px] before:top-6 before:w-px before:bg-border">

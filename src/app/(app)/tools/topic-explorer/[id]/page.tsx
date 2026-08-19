@@ -5,6 +5,8 @@ import { ArrowLeft, Download, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ReportView } from '@/components/report/report-view';
 import { SaveToProject } from '@/components/app/save-to-project';
+import { DeleteButton } from '@/components/app/delete-button';
+import { deleteValidation } from '@/lib/actions/validation';
 import { getAccountState } from '@/lib/account/usage';
 import { createClient } from '@/lib/supabase/server';
 import { canExportPdf } from '@/lib/billing/plans';
@@ -80,6 +82,16 @@ export default async function ValidationReportPage({ params }: Props) {
               validationId={validation.id}
               projectId={validation.project_id}
               projects={(projects as Pick<Project, 'id' | 'name'>[] | null) ?? []}
+            />
+            <DeleteButton
+              name="this report"
+              description={`The saved report for "${validation.topic}" is removed. It does not give the validation credit back — re-running the topic spends another one.`}
+              action={async () => {
+                'use server';
+                await deleteValidation(validation.id);
+              }}
+              redirectTo="/tools/topic-explorer"
+              label="Delete report"
             />
           </>
         }

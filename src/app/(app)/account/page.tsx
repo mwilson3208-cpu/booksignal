@@ -22,7 +22,7 @@ const STATUS_LABEL: Record<string, string> = {
 export default async function AccountPage({
   searchParams,
 }: {
-  searchParams: { checkout?: string };
+  searchParams: { checkout?: string; plan?: string; interval?: string };
 }) {
   const account = await getAccountState();
   if (!account) redirect('/login');
@@ -120,6 +120,8 @@ export default async function AccountPage({
         stripeConfigured={isStripeConfigured}
         cancelAtPeriodEnd={profile.cancel_at_period_end}
         periodEnd={usage.periodEnd}
+        preselectInterval={searchParams.interval === 'year' ? 'year' : searchParams.interval === 'month' ? 'month' : undefined}
+        highlightPlan={searchParams.plan === 'pro' || searchParams.plan === 'standard' ? searchParams.plan : undefined}
       />
     </>
   );

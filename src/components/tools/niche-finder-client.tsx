@@ -9,8 +9,9 @@ import { Progress } from '@/components/ui/progress';
 import { cn, formatNumber } from '@/lib/utils';
 import { NICHE_QUESTIONS, findNiches, type NicheAnswers } from '@/lib/tools/niche-finder';
 import { titleCaseTopic } from '@/lib/market/seed';
+import { SaveIdeaButton } from '@/components/app/save-idea-button';
 
-export function NicheFinderClient() {
+export function NicheFinderClient({ projects = [] }: { projects?: { id: string; name: string }[] }) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Partial<NicheAnswers>>({});
 
@@ -76,6 +77,13 @@ export function NicheFinderClient() {
                     Fit
                   </div>
                 </div>
+                <SaveIdeaButton
+                  kind="niche"
+                  title={titleCaseTopic(niche.topic)}
+                  payload={niche as unknown as Record<string, unknown>}
+                  projects={projects}
+                  label="Save"
+                />
                 <Button asChild size="sm">
                   <Link href={`/tools/topic-explorer?topic=${encodeURIComponent(niche.topic)}`}>
                     Validate

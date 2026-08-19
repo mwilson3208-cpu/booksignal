@@ -1,13 +1,27 @@
-import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { PageHeader } from '@/components/app/page-header';
+import { createClient } from '@/lib/supabase/server';
 import { PreviewNotice } from '@/components/app/preview-notice';
 import { BookIdeasClient } from '@/components/tools/book-ideas-client';
-import { Skeleton } from '@/components/ui/skeleton';
 
 export const metadata: Metadata = { title: 'Book Ideas Generator' };
 
-export default function BookIdeasPage() {
+
+async function loadProjects() {
+  const supabase = createClient();
+  const { data } = (await supabase?.from('projects').select('id, name').order('name')) ?? {
+    data: null,
+  };
+  return (data as { id: string; name: string }[] | null) ?? [];
+}
+
+export default async function BookIdeasPage({
+  searchParams,
+}: {
+  searchParams: { topic?: string };
+}) {
+  const projects = await loadProjects();
+
   return (
     <>
       <PageHeader
@@ -19,9 +33,7 @@ export default function BookIdeasPage() {
         Titles, keywords and categories are generated from your niche and are yours to use. The
         search volumes attached to them come from the sample data layer.
       </PreviewNotice>
-      <Suspense fallback={<Skeleton className="h-32 w-full" />}>
-        <BookIdeasClient />
-      </Suspense>
+      <BookIdeasClient projects={projects} initialTopic={searchParams.topic ?? ''} />
     </>
   );
 }

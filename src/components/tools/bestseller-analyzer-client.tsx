@@ -1,10 +1,19 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { AlertCircle, Search } from 'lucide-react';
+import Link from 'next/link';
+import { AlertCircle, Check, FolderPlus, Loader2, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { analyzeBook, type BookAnalysis } from '@/lib/tools/bestseller-analyzer';
 import { saveCompetitor } from '@/lib/actions/competitors';
 import { formatCurrency, formatNumber } from '@/lib/utils';
@@ -17,7 +26,7 @@ export function BestsellerAnalyzerClient({
   const [url, setUrl] = useState('');
   const [analysis, setAnalysis] = useState<BookAnalysis | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [saved, setSaved] = useState(false);
+  const [savedTo, setSavedTo] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
   return (
@@ -27,7 +36,7 @@ export function BestsellerAnalyzerClient({
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              setSaved(false);
+              setSavedTo(null);
               const result = analyzeBook(url);
               if (!result) {
                 setError('That does not look like an Amazon book URL. Paste a /dp/ or /gp/product/ link, or the 10-character ASIN on its own.');
@@ -72,29 +81,53 @@ export function BestsellerAnalyzerClient({
                     {analysis.author} · ASIN {analysis.asin}
                   </p>
                 </div>
-                <Button
-                  variant="outline"
-                  disabled={pending || saved || projects.length === 0}
-                  onClick={() =>
-                    startTransition(async () => {
-                      await saveCompetitor({
-                        asin: analysis.asin,
-                        title: analysis.title,
-                        author: analysis.author,
-                        sourceUrl: analysis.sourceUrl,
-                        snapshot: analysis as unknown as Record<string, unknown>,
-                        projectId: projects[0]?.id ?? null,
-                      });
-                      setSaved(true);
-                    })
-                  }
-                >
-                  {saved
-                    ? 'Saved'
-                    : projects.length === 0
-                      ? 'Create a project first'
-                      : `Save to ${projects[0].name}`}
-                </Button>
+                {projects.length === 0 ? (
+                  <Button asChild variant="outline">
+                    <Link href="/projects">
+                      <FolderPlus className="h-4 w-4" />
+                      Create a project to save
+                    </Link>
+                  </Button>
+                ) : (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" disabled={pending}>
+                        {pending ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : savedTo ? (
+                          <Check className="h-4 w-4" />
+                        ) : (
+                          <FolderPlus className="h-4 w-4" />
+                        )}
+                        {savedTo ? `Saved to ${savedTo}` : 'Save competitor'}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                      <DropdownMenuLabel>Save to</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {projects.map((project) => (
+                        <DropdownMenuItem
+                          key={project.id}
+                          onSelect={() =>
+                            startTransition(async () => {
+                              await saveCompetitor({
+                                asin: analysis.asin,
+                                title: analysis.title,
+                                author: analysis.author,
+                                sourceUrl: analysis.sourceUrl,
+                                snapshot: analysis as unknown as Record<string, unknown>,
+                                projectId: project.id,
+                              });
+                              setSavedTo(project.name);
+                            })
+                          }
+                        >
+                          <span className="flex-1 truncate">{project.name}</span>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </div>
 
               <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-5">

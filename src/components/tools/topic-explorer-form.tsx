@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useTransition } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { AlertCircle, ArrowRight, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -28,13 +28,15 @@ const STAGES = [
 export function TopicExplorerForm({
   remaining,
   projectId,
+  initialTopic = '',
 }: {
   remaining: number;
   projectId?: string;
+  /** Prefilled when arriving from a niche suggestion or a series volume. */
+  initialTopic?: string;
 }) {
   const router = useRouter();
-  const params = useSearchParams();
-  const [topic, setTopic] = useState(params.get('topic') ?? '');
+  const [topic, setTopic] = useState(initialTopic);
   const [error, setError] = useState<string | null>(null);
   const [limitReached, setLimitReached] = useState(false);
   const [stage, setStage] = useState(0);

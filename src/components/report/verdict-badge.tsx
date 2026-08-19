@@ -57,23 +57,3 @@ export function VerdictBadge({
     </span>
   );
 }
-
-export function VerdictDot({ verdict, className }: { verdict: Verdict; className?: string }) {
-  return <span className={cn('inline-block h-2 w-2 rounded-full', STYLES[verdict].dot, className)} />;
-}
-
-export function verdictTextClass(verdict: Verdict) {
-  return verdict === 'GO'
-    ? 'text-verdict-go'
-    : verdict === 'MAYBE'
-      ? 'text-verdict-maybe'
-      : 'text-verdict-skip';
-}
-
-export function verdictBgClass(verdict: Verdict) {
-  return verdict === 'GO'
-    ? 'bg-verdict-go'
-    : verdict === 'MAYBE'
-      ? 'bg-verdict-maybe'
-      : 'bg-verdict-skip';
-}

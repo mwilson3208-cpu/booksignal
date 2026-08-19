@@ -1,13 +1,27 @@
-import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { PageHeader } from '@/components/app/page-header';
+import { createClient } from '@/lib/supabase/server';
 import { PreviewNotice } from '@/components/app/preview-notice';
 import { SeriesBuilderClient } from '@/components/tools/series-builder-client';
-import { Skeleton } from '@/components/ui/skeleton';
 
 export const metadata: Metadata = { title: 'Series Builder' };
 
-export default function SeriesBuilderPage() {
+
+async function loadProjects() {
+  const supabase = createClient();
+  const { data } = (await supabase?.from('projects').select('id, name').order('name')) ?? {
+    data: null,
+  };
+  return (data as { id: string; name: string }[] | null) ?? [];
+}
+
+export default async function SeriesBuilderPage({
+  searchParams,
+}: {
+  searchParams: { topic?: string };
+}) {
+  const projects = await loadProjects();
+
   return (
     <>
       <PageHeader
@@ -19,9 +33,7 @@ export default function SeriesBuilderPage() {
         The series arc and the copy are real output you can work from. The per-volume search volumes
         come from the sample data layer.
       </PreviewNotice>
-      <Suspense fallback={<Skeleton className="h-32 w-full" />}>
-        <SeriesBuilderClient />
-      </Suspense>
+      <SeriesBuilderClient projects={projects} initialTopic={searchParams.topic ?? ''} />
     </>
   );
 }

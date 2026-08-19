@@ -41,6 +41,24 @@ export function createRng(seed: string | number) {
 
 export type Rng = ReturnType<typeof createRng>;
 
+/**
+ * Fisher-Yates, driven by the seeded stream.
+ *
+ * Never shuffle with `sort(() => rng.next() - 0.5)`. A comparator that ignores its
+ * arguments makes the result depend on the engine's sort implementation — how many
+ * comparisons it performs and in what order — so Node and the browser return different
+ * permutations from the same seed. That silently breaks the reproducibility the whole
+ * product rests on. This is deterministic everywhere, and unbiased.
+ */
+export function shuffle<T>(items: readonly T[], rng: Rng): T[] {
+  const out = [...items];
+  for (let i = out.length - 1; i > 0; i -= 1) {
+    const j = rng.int(0, i);
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
 export function normalizeTopic(topic: string): string {
   return topic
     .toLowerCase()

@@ -25,6 +25,8 @@ export function BillingPanel({
   stripeConfigured,
   cancelAtPeriodEnd,
   periodEnd,
+  preselectInterval,
+  highlightPlan,
 }: {
   currentPlan: PlanId;
   currentInterval: BillingInterval | null;
@@ -32,8 +34,13 @@ export function BillingPanel({
   stripeConfigured: boolean;
   cancelAtPeriodEnd: boolean;
   periodEnd: string;
+  /** Set when the visitor arrived from a pricing CTA that already named a plan. */
+  preselectInterval?: BillingInterval;
+  highlightPlan?: PlanId;
 }) {
-  const [interval, setInterval] = useState<BillingInterval>(currentInterval ?? 'month');
+  const [interval, setInterval] = useState<BillingInterval>(
+    preselectInterval ?? currentInterval ?? 'month',
+  );
   const [pendingPlan, setPendingPlan] = useState<PlanId | 'portal' | null>(null);
   const [error, setError] = useState<string | null>(null);
   const yearly = interval === 'year';
@@ -101,6 +108,7 @@ export function BillingPanel({
         <div className="grid gap-4 lg:grid-cols-2">
           {TIERS.map((plan) => {
             const isCurrent = currentPlan === plan.id;
+            const isPicked = highlightPlan === plan.id && !isCurrent;
             const price = effectiveMonthly(plan, interval);
             return (
               <div
@@ -108,11 +116,13 @@ export function BillingPanel({
                 className={cn(
                   'flex flex-col rounded-xl border p-5',
                   isCurrent && 'border-2 border-primary bg-primary/5',
+                  isPicked && 'border-2 border-primary/50',
                 )}
               >
                 <div className="flex items-center justify-between gap-2">
                   <h3 className="font-semibold">{plan.name}</h3>
                   {isCurrent && <Badge>Current plan</Badge>}
+                  {isPicked && <Badge variant="muted">The plan you picked</Badge>}
                 </div>
 
                 <div className="mt-4 flex items-baseline gap-1.5">

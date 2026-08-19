@@ -15,6 +15,14 @@ export function AuthForm({ mode }: { mode: 'login' | 'signup' }) {
   const router = useRouter();
   const params = useSearchParams();
   const next = params.get('next') ?? '/dashboard';
+  // The pricing table links here with the plan the visitor picked. Carry it through so
+  // the choice survives sign-up instead of being dropped on the floor.
+  const plan = params.get('plan');
+  const interval = params.get('interval');
+  const afterSignup =
+    plan === 'standard' || plan === 'pro'
+      ? `/account?plan=${plan}&interval=${interval === 'year' ? 'year' : 'month'}`
+      : '/onboarding';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -43,7 +51,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'signup' }) {
           password,
           options: {
             data: { full_name: fullName || null },
-            emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/onboarding')}`,
+            emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(afterSignup)}`,
           },
         });
         if (signUpError) throw signUpError;
@@ -52,7 +60,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'signup' }) {
           setConfirmSent(true);
           return;
         }
-        router.push('/onboarding');
+        router.push(afterSignup);
       } else {
         const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
         if (signInError) throw signInError;

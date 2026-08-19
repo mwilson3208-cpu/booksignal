@@ -1,4 +1,4 @@
-import { createRng, displayTopic, normalizeTopic } from '@/lib/market/seed';
+import { createRng, displayTopic, normalizeTopic, shuffle } from '@/lib/market/seed';
 import { generateMarketSnapshot } from '@/lib/market/mock-provider';
 
 /**
@@ -44,7 +44,7 @@ export function generateBookIdeas(topic: string, count = 6): BookIdea[] {
   const rng = createRng(`ideas:${normalized}`);
   const snapshot = generateMarketSnapshot(normalized);
 
-  const patterns = [...TITLE_PATTERNS].sort(() => rng.next() - 0.5).slice(0, count);
+  const patterns = shuffle(TITLE_PATTERNS, rng).slice(0, count);
 
   return patterns.map((pattern, i) => {
     // Seven slots: the topic itself, then the highest-volume related phrases.

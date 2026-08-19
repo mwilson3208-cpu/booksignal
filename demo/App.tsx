@@ -35,7 +35,7 @@ import { CoachClient } from '@/components/tools/coach-client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PLANS } from '@/lib/billing/plans';
-import { demoReport } from './shims/actions';
+import { demoReport, registerDemoTopic } from './shims/actions';
 import { generateMarketSnapshot } from '@/lib/market/mock-provider';
 import { scoreTopic } from '@/lib/scoring/engine';
 import { formatDate } from '@/lib/utils';
@@ -168,11 +168,11 @@ const SAMPLE_TOPICS = [
   'Airbnb hosting',
 ];
 
+// Registered at load so a direct link to a sample report keeps its original wording.
+SAMPLE_TOPICS.forEach(registerDemoTopic);
+
 function TopicExplorer() {
-  const samples = SAMPLE_TOPICS.map((topic) => {
-    const report = scoreTopic(generateMarketSnapshot(topic));
-    return { topic, report };
-  });
+  const samples = SAMPLE_TOPICS.map((topic) => ({ topic, report: registerDemoTopic(topic) }));
 
   return (
     <>

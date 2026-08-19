@@ -13,6 +13,21 @@ export type ValidationResult =
 
 const reports = new Map<string, ValidationReport>();
 
+export function slugFor(topic: string): string {
+  return scoreTopic(generateMarketSnapshot(topic)).normalizedTopic.replace(/\s+/g, '-');
+}
+
+/**
+ * Pre-registers a topic so a direct link to its report renders the wording the author
+ * used. A slug is lower-cased, so reconstructing the topic from it alone would turn
+ * "AI prompt engineering" into "ai prompt engineering".
+ */
+export function registerDemoTopic(topic: string): ValidationReport {
+  const report = scoreTopic(generateMarketSnapshot(topic));
+  reports.set(report.normalizedTopic.replace(/\s+/g, '-'), report);
+  return report;
+}
+
 export function demoReport(id: string): ValidationReport | undefined {
   return reports.get(id);
 }
