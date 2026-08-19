@@ -13,3 +13,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 coverage/
+
+# Demo build output
+demo/dist/
+demo/demo.css

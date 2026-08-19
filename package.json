@@ -9,7 +9,8 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "demo": "node demo/make-css.mjs && node demo/build.mjs && tailwindcss -c demo/tailwind.config.ts -i demo/demo.css -o demo/dist/styles.css --minify && node demo/assemble.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.118.0",
@@ -45,6 +46,7 @@
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "autoprefixer": "^10.4.20",
+    "esbuild": "^0.28.2",
     "eslint": "^8.57.1",
     "eslint-config-next": "14.2.35",
     "postcss": "^8.5.3",

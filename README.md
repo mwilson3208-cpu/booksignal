@@ -132,7 +132,25 @@ npm run build       # production build
 npm run typecheck   # tsc --noEmit
 npm run lint        # next lint
 npm test            # vitest
+npm run demo        # single-file static demo -> demo/dist/booksignal-demo.html
 ```
+
+## The static demo
+
+`npm run demo` bundles the marketing site and every client-side tool into one
+self-contained HTML file with no network dependencies — open it straight from disk.
+
+It is the real code, not a mock-up: the same React components and the same scoring
+engine, with `next/link`, `next/navigation` and the server actions swapped for the
+stand-ins in `demo/shims/`. Typing a topic runs the engine in the browser and returns a
+genuine scored report.
+
+Anything needing a server is switched off and says so on the page: accounts, projects,
+Stripe billing, PDF export and the AI Publishing Coach.
+
+`demo/make-css.mjs` derives the demo's stylesheet from `src/app/globals.css`, re-emitting
+the dark tokens against `prefers-color-scheme` and `data-theme` selectors so the page
+follows its host's theme. The two can't drift because one is generated from the other.
 
 ## Deploying to Vercel
 
