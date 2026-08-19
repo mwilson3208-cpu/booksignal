@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { cn, formatNumber } from '@/lib/utils';
 import { NICHE_QUESTIONS, findNiches, type NicheAnswers } from '@/lib/tools/niche-finder';
+import { titleCaseTopic } from '@/lib/market/seed';
 
 export function NicheFinderClient() {
   const [step, setStep] = useState(0);
@@ -50,7 +51,7 @@ export function NicheFinderClient() {
                 {i + 1}
               </span>
               <div className="min-w-0 flex-1">
-                <div className="font-medium capitalize">{niche.topic}</div>
+                <div className="font-medium">{titleCaseTopic(niche.topic)}</div>
                 <p className="mt-1 text-sm text-muted-foreground">{niche.rationale}</p>
                 <div className="tnum mt-2 flex flex-wrap gap-x-5 gap-y-1 text-xs text-muted-foreground">
                   <span>{formatNumber(niche.monthlySearchVolume)} searches/mo</span>

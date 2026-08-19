@@ -36,7 +36,7 @@ export function DemoSection() {
       <div className="container">
         <div className="mx-auto max-w-2xl text-center">
           <span className="eyebrow">Watch it run</span>
-          <h2 className="h2 mt-3">Ninety seconds, start to finish</h2>
+          <h2 className="h2 mt-3 text-balance">Ninety seconds, start to finish</h2>
           <p className="lede mt-4">
             No exports to reconcile, no rank-tracking spreadsheet to maintain. One field in, one
             decision out.
@@ -45,7 +45,7 @@ export function DemoSection() {
 
         <div className="mx-auto mt-12 max-w-4xl">
           <div className="overflow-hidden rounded-xl border bg-card shadow-lg">
-            <div className="aspect-video w-full bg-gradient-to-br from-muted/60 to-background p-6 sm:p-10">
+            <div className="flex min-h-[300px] w-full items-center justify-center bg-gradient-to-br from-muted/60 to-background p-6 sm:min-h-[380px] sm:p-10">
               <DemoFrame step={active} />
             </div>
           </div>
@@ -88,20 +88,20 @@ function DemoFrame({ step }: { step: number }) {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
       {step === 0 && (
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-lg">
           <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Book topic
           </div>
-          <div className="mt-2 flex h-12 items-center rounded-lg border-2 border-primary bg-background px-4 text-sm sm:text-base">
+          <div className="mt-2 flex h-14 items-center rounded-lg border-2 border-primary bg-background px-4 text-base sm:text-lg">
             <span>intermittent fasting for women over 40</span>
-            <span className="ml-0.5 inline-block h-5 w-0.5 animate-pulse bg-primary" />
+            <span className="ml-0.5 inline-block h-6 w-0.5 animate-pulse bg-primary" />
           </div>
-          <div className="mt-3 h-10 rounded-lg bg-primary/90" />
+          <div className="mt-3 flex h-12 items-center justify-center rounded-lg bg-primary text-sm font-medium text-primary-foreground">Validate topic</div>
         </div>
       )}
 
       {step === 1 && (
-        <div className="w-full max-w-md space-y-3">
+        <div className="w-full max-w-lg space-y-4">
           {[
             ['Search volume', 100],
             ['Competing titles', 82],
@@ -125,7 +125,7 @@ function DemoFrame({ step }: { step: number }) {
       )}
 
       {step === 2 && (
-        <div className="flex w-full max-w-md flex-col items-center gap-4 text-center">
+        <div className="flex w-full max-w-lg flex-col items-center gap-4 text-center">
           <div className="tnum text-6xl font-semibold text-verdict-go sm:text-7xl">73</div>
           <div className="rounded-full bg-verdict-go-soft px-5 py-2 text-sm font-semibold uppercase tracking-widest text-verdict-go ring-1 ring-inset ring-verdict-go/25">
             GO

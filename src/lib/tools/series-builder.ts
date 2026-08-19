@@ -1,4 +1,4 @@
-import { createRng, normalizeTopic } from '@/lib/market/seed';
+import { createRng, displayTopic, normalizeTopic } from '@/lib/market/seed';
 import { generateMarketSnapshot } from '@/lib/market/mock-provider';
 
 /**
@@ -50,16 +50,9 @@ const ARC = [
   },
 ];
 
-function titleCase(input: string) {
-  return input
-    .split(' ')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
-}
-
 export function buildSeries(topic: string, length = 4): SeriesBook[] {
   const normalized = normalizeTopic(topic);
-  const display = titleCase(normalized);
+  const display = displayTopic(topic, normalized);
   const rng = createRng(`series:${normalized}:${length}`);
   const clamped = Math.min(5, Math.max(3, length));
 

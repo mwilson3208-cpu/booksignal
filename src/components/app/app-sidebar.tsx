@@ -18,7 +18,6 @@ import {
   X,
   type LucideIcon,
 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { Logo } from '@/components/brand/logo';
 import { cn } from '@/lib/utils';
 import { TOOLS } from '@/lib/brand';
@@ -52,8 +51,14 @@ export function AppSidebar({ children }: { children?: React.ReactNode }) {
       </div>
 
       <div>
-        <div className="px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          Tools
+        <div className="flex items-center justify-between px-3 pb-2">
+          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Tools
+          </span>
+          <span className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-verdict-maybe" />
+            Preview
+          </span>
         </div>
         <div className="space-y-1">
           {TOOLS.map((tool) => (
@@ -65,9 +70,12 @@ export function AppSidebar({ children }: { children?: React.ReactNode }) {
               onNavigate={() => setOpen(false)}
               trailing={
                 tool.status === 'preview' ? (
-                  <Badge variant="muted" className="px-1.5 py-0 text-[10px]">
-                    Preview
-                  </Badge>
+                  // A dot rather than a pill: the label has to fit at 256px, and the
+                  // tool page itself carries the full preview notice.
+                  <span
+                    className="h-1.5 w-1.5 shrink-0 rounded-full bg-verdict-maybe"
+                    title="Preview — runs on sample data"
+                  />
                 ) : null
               }
             >

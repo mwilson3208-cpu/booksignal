@@ -48,3 +48,49 @@ export function normalizeTopic(topic: string): string {
     .replace(/\s+/g, ' ')
     .trim();
 }
+
+const SMALL_WORDS = new Set(['a', 'an', 'and', 'the', 'for', 'of', 'in', 'on', 'to', 'with', 'at']);
+
+/**
+ * Title-cases a normalized topic for display. Connecting words stay lowercase unless
+ * they lead, so "gut health for absolute beginners" reads as "Gut Health for Absolute
+ * Beginners" rather than the shouty "For".
+ */
+export function titleCaseTopic(normalized: string): string {
+  return normalized
+    .split(' ')
+    .filter(Boolean)
+    .map((word, i) =>
+      i > 0 && SMALL_WORDS.has(word) ? word : word.charAt(0).toUpperCase() + word.slice(1),
+    )
+    .join(' ');
+}
+
+/**
+ * The topic as it should appear in generated copy.
+ *
+ * Words come from the normalized topic — punctuation and stray spacing cannot leak into
+ * a title — but any word the author wrote with an interior capital keeps its original
+ * form. "AI prompt engineering" becomes "AI Prompt Engineering", and both
+ * "  sourdough, baking! " and "Sourdough Baking" become "Sourdough Baking".
+ */
+export function displayTopic(original: string, normalized = normalizeTopic(original)): string {
+  const preserved = new Map<string, string>();
+  for (const word of original.trim().split(/\s+/)) {
+    const key = word.toLowerCase().replace(/[^a-z0-9]/g, '');
+    // An interior capital means the author meant it: AI, PhD, JavaScript.
+    if (key && /[A-Z]/.test(word.slice(1))) preserved.set(key, word.replace(/[^A-Za-z0-9]/g, ''));
+  }
+  if (preserved.size === 0) return titleCaseTopic(normalized);
+
+  return normalized
+    .split(' ')
+    .filter(Boolean)
+    .map((word, i) => {
+      const kept = preserved.get(word);
+      if (kept) return kept;
+      if (i > 0 && SMALL_WORDS.has(word)) return word;
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(' ');
+}

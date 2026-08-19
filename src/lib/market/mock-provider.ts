@@ -5,7 +5,7 @@ import type {
   RelatedKeyword,
 } from '@/lib/types';
 import { estimateMonthlySalesFromBsr } from '@/lib/scoring/bsr';
-import { createRng, hashString, normalizeTopic, type Rng } from './seed';
+import { createRng, displayTopic, hashString, normalizeTopic, type Rng } from './seed';
 
 /**
  * v1 market data layer: a deterministic mock.
@@ -84,16 +84,6 @@ const CATEGORY_ROOTS = [
   'Books > Cookbooks, Food & Wine > Special Diet',
 ];
 
-function titleCase(input: string): string {
-  const small = new Set(['a', 'an', 'and', 'the', 'for', 'of', 'in', 'on', 'to', 'with', 'at']);
-  return input
-    .split(' ')
-    .map((word, i) =>
-      i > 0 && small.has(word) ? word : word.charAt(0).toUpperCase() + word.slice(1),
-    )
-    .join(' ');
-}
-
 function asin(rng: Rng): string {
   const chars = 'ABCDEFGHIJKLMNPQRSTUVWXYZ0123456789';
   let out = 'B0';
@@ -113,13 +103,23 @@ function baseSearchVolume(normalized: string, rng: Rng): number {
   return Math.max(60, Math.round(10 ** magnitude * specificityPenalty));
 }
 
+/**
+ * How many titles compete for a phrase. Supply grows with the square root of demand —
+ * a topic with 100x the searches does not carry 100x the books, because the long tail of
+ * a niche is written by far fewer authors — and is then scaled by how crowded the shelf
+ * is. One formula for the parent topic and every related phrase, so the report's numbers
+ * cannot contradict each other.
+ */
+function competingTitlesFor(volume: number, heat: number, jitter: number): number {
+  return Math.max(40, Math.round(volume ** 0.5 * 10 ** (0.2 + heat * 1.95) * jitter));
+}
+
 function buildCompetitors(
-  normalized: string,
+  display: string,
   rng: Rng,
   marketHeat: number,
   marketVigor: number,
 ): Competitor[] {
-  const display = titleCase(normalized);
   const patterns = [...TITLE_PATTERNS].sort(() => rng.next() - 0.5);
   const count = 20;
   // The strongest title's rank anchors the whole page. Vigor — how much money actually
@@ -164,16 +164,27 @@ function buildCompetitors(
   return competitors.sort((a, b) => a.bsr - b.bsr).map((c, i) => ({ ...c, rank: i + 1 }));
 }
 
-function buildKeywords(normalized: string, rng: Rng, parentVolume: number): RelatedKeyword[] {
+function buildKeywords(
+  normalized: string,
+  rng: Rng,
+  parentVolume: number,
+  marketHeat: number,
+): RelatedKeyword[] {
   const modifiers = [...KEYWORD_MODIFIERS].sort(() => rng.next() - 0.5).slice(0, rng.int(8, 12));
   return modifiers
     .map((modifier) => {
       const volume = Math.max(40, Math.round(parentVolume * rng.float(0.04, 0.42)));
-      const competingTitles = Math.max(12, Math.round(volume * rng.float(0.25, 3.4)));
+      // A longer phrase is narrower than its parent, so it carries proportionally fewer
+      // titles. That is what makes niching down show up as a real win in the numbers.
+      const competingTitles = competingTitlesFor(
+        volume,
+        Math.max(0, marketHeat - 0.18),
+        rng.float(0.7, 1.3),
+      );
       // Opportunity rewards volume per competing title, on a log curve.
       const ratio = volume / competingTitles;
       const opportunity = Math.round(
-        Math.min(98, Math.max(4, 50 + Math.log10(Math.max(ratio, 0.01)) * 46)),
+        Math.min(98, Math.max(4, 50 + Math.log10(Math.max(ratio, 0.01)) * 38)),
       );
       return { keyword: `${normalized} ${modifier}`, monthlySearchVolume: volume, competingTitles, opportunity };
     })
@@ -203,8 +214,8 @@ export function generateMarketSnapshot(topic: string, retrievedAt?: string): Mar
   const marketVigor = (hashString(`vigor:${normalized}`) % 997) / 997;
 
   const monthlySearchVolume = baseSearchVolume(normalized, rng);
-  const competitors = buildCompetitors(normalized, rng, marketHeat, marketVigor);
-  const relatedKeywords = buildKeywords(normalized, rng, monthlySearchVolume);
+  const competitors = buildCompetitors(displayTopic(topic, normalized), rng, marketHeat, marketVigor);
+  const relatedKeywords = buildKeywords(normalized, rng, monthlySearchVolume, marketHeat);
 
   return {
     topic: topic.trim(),
@@ -215,10 +226,7 @@ export function generateMarketSnapshot(topic: string, retrievedAt?: string): Mar
     competitors,
     // Result counts grow sub-linearly with demand: a topic with 10x the searches does not
     // carry 10x the titles, because the long tail of a niche is written by far fewer authors.
-    totalCompetingTitles: Math.max(
-      40,
-      Math.round(monthlySearchVolume ** 0.5 * 10 ** (0.2 + marketHeat * 1.95) * rng.float(0.75, 1.4)),
-    ),
+    totalCompetingTitles: competingTitlesFor(monthlySearchVolume, marketHeat, rng.float(0.75, 1.4)),
     categories: buildCategories(rng, marketHeat),
     source: 'mock',
     // Fixed by default so the whole snapshot — and therefore the whole report — is

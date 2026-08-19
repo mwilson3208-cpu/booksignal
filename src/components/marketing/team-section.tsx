@@ -31,7 +31,7 @@ export function TeamSection() {
       <div className="container">
         <div className="mx-auto max-w-2xl text-center">
           <span className="eyebrow">About</span>
-          <h2 className="h2 mt-3">Built by people who wrote the wrong book first</h2>
+          <h2 className="h2 mt-3 text-balance">Built by people who wrote the wrong book first</h2>
           <p className="lede mt-4">
             BookSignal exists because the expensive part of publishing is not the writing. It is
             spending six months on a topic nobody was looking for.

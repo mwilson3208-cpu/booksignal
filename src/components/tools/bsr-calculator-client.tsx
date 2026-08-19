@@ -11,8 +11,8 @@ const BENCHMARKS = [
   { bsr: 100, label: 'Top 100 overall' },
   { bsr: 2_000, label: 'Strong category bestseller' },
   { bsr: 20_000, label: 'Healthy mid-list title' },
-  { bsr: 100_000, label: 'Steady trickle' },
-  { bsr: 500_000, label: 'A sale every few weeks' },
+  { bsr: 100_000, label: 'A sale most days' },
+  { bsr: 500_000, label: 'A few sales a month' },
 ];
 
 export function BsrCalculatorClient() {

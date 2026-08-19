@@ -115,7 +115,7 @@ export function PricingSection() {
       <div className="container">
         <div className="mx-auto max-w-2xl text-center">
           <span className="eyebrow">Pricing</span>
-          <h2 className="h2 mt-3">Cheaper than one book that does not sell</h2>
+          <h2 className="h2 mt-3 text-balance">Cheaper than one book that does not sell</h2>
           <p className="lede mt-4">
             Both plans include all seven tools. The only difference is how many topics you can put
             through a month.

@@ -1,4 +1,4 @@
-import { createRng, normalizeTopic } from '@/lib/market/seed';
+import { createRng, displayTopic, normalizeTopic } from '@/lib/market/seed';
 import { generateMarketSnapshot } from '@/lib/market/mock-provider';
 
 /**
@@ -38,16 +38,9 @@ const HOOKS = [
   'Written for the reader with forty minutes a week, not four hours a day.',
 ];
 
-function titleCase(input: string) {
-  return input
-    .split(' ')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
-}
-
 export function generateBookIdeas(topic: string, count = 6): BookIdea[] {
   const normalized = normalizeTopic(topic);
-  const display = titleCase(normalized);
+  const display = displayTopic(topic, normalized);
   const rng = createRng(`ideas:${normalized}`);
   const snapshot = generateMarketSnapshot(normalized);
 

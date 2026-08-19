@@ -42,7 +42,7 @@ export function Testimonials() {
       <div className="container">
         <div className="mx-auto max-w-2xl text-center">
           <span className="eyebrow">What authors say</span>
-          <h2 className="h2 mt-3">Written for people who have to choose</h2>
+          <h2 className="h2 mt-3 text-balance">Written for people who have to choose</h2>
           <Badge variant="muted" className="mt-4">
             Sample copy — real quotes replace these at launch
           </Badge>

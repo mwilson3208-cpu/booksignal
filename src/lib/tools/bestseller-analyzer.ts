@@ -1,4 +1,4 @@
-import { createRng, normalizeTopic } from '@/lib/market/seed';
+import { createRng, titleCaseTopic, normalizeTopic } from '@/lib/market/seed';
 import { generateMarketSnapshot } from '@/lib/market/mock-provider';
 import { estimateMonthlySalesFromBsr } from '@/lib/scoring/bsr';
 
@@ -101,11 +101,16 @@ export function analyzeBook(input: string): BookAnalysis | null {
   return {
     asin,
     sourceUrl: input.trim(),
-    title: `The ${seedTopic.split(' ').map((w) => w[0].toUpperCase() + w.slice(1)).join(' ')}`,
+    title: `The ${titleCaseTopic(seedTopic)}`,
     author: `${rng.pick(FIRST)} ${rng.pick(LAST)}`,
     price,
     bsr,
-    reviews: Math.round(10 ** rng.float(1.2, 3.9)),
+    // Reviews track how hard the title sells: a top-500 book has years of accumulated
+    // social proof, a book at #200,000 has a handful. Roughly 0.5% of buyers review.
+    reviews: Math.max(
+      3,
+      Math.round(estimateMonthlySalesFromBsr(bsr) * rng.float(8, 30) * 0.005),
+    ),
     rating: Math.round(rng.float(3.7, 4.9) * 10) / 10,
     estimatedMonthlySales: monthlySales,
     estimatedMonthlyRevenue: Math.round(monthlySales * price),

@@ -10,7 +10,7 @@ import { scoreTopic } from '@/lib/scoring/engine';
  * the same code path a signed-in user hits, so the marketing site can never drift from
  * the product.
  */
-const SHOWCASE_TOPIC = 'ai prompt engineering';
+const SHOWCASE_TOPIC = 'AI prompt engineering';
 
 export function ProductShot({ className }: { className?: string }) {
   const report = scoreTopic(generateMarketSnapshot(SHOWCASE_TOPIC));
@@ -38,7 +38,7 @@ export function ProductShot({ className }: { className?: string }) {
           <ScoreGauge score={report.score} verdict={report.verdict} size={124} />
           <div className="min-w-0 flex-1 text-center sm:text-left">
             <VerdictBadge verdict={report.verdict} />
-            <div className="mt-3 truncate text-lg font-semibold capitalize">{report.topic}</div>
+            <div className="mt-3 truncate text-lg font-semibold">{report.topic}</div>
             <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground">
               {report.verdictReason}
             </p>
@@ -121,20 +121,30 @@ function Row({ label, value, tone }: { label: string; value: string; tone?: stri
 function TopicExplorerPreview() {
   const report = scoreTopic(generateMarketSnapshot('sourdough baking'));
   return (
-    <div className="space-y-2">
+    <div className="space-y-2.5">
       <div className="flex items-center justify-between">
         <VerdictBadge verdict={report.verdict} size="sm" />
         <span className="tnum text-lg font-semibold">{report.score}</span>
       </div>
       {report.factors.map((f) => (
-        <div key={f.key} className="h-1.5 overflow-hidden rounded-full bg-muted">
-          <div
-            className={cn(
-              'h-full rounded-full',
-              f.score >= 70 ? 'bg-verdict-go' : f.score >= 45 ? 'bg-verdict-maybe' : 'bg-verdict-skip',
-            )}
-            style={{ width: `${f.score}%` }}
-          />
+        <div key={f.key}>
+          <div className="flex items-baseline justify-between text-[11px]">
+            <span className="text-muted-foreground">{f.label}</span>
+            <span className="tnum font-medium">{f.score.toFixed(1)}</span>
+          </div>
+          <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-muted">
+            <div
+              className={cn(
+                'h-full rounded-full',
+                f.score >= 70
+                  ? 'bg-verdict-go'
+                  : f.score >= 45
+                    ? 'bg-verdict-maybe'
+                    : 'bg-verdict-skip',
+              )}
+              style={{ width: `${f.score}%` }}
+            />
+          </div>
         </div>
       ))}
     </div>

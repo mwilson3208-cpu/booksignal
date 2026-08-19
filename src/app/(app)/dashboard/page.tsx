@@ -23,19 +23,23 @@ export default async function DashboardPage() {
 
   const supabase = createClient();
   const [validationsResult, projectsResult] = await Promise.all([
-    supabase!
-      .from('validations')
+    supabase
+      ?.from('validations')
       .select('id, topic, score, verdict, created_at')
       .order('created_at', { ascending: false })
       .limit(10),
-    supabase!.from('projects').select('id, name, created_at').order('created_at', { ascending: false }).limit(4),
+    supabase
+      ?.from('projects')
+      .select('id, name, created_at')
+      .order('created_at', { ascending: false })
+      .limit(4),
   ]);
 
-  const validations = (validationsResult.data ?? []) as Pick<
+  const validations = (validationsResult?.data ?? []) as Pick<
     ValidationRow,
     'id' | 'topic' | 'score' | 'verdict' | 'created_at'
   >[];
-  const projects = (projectsResult.data ?? []) as Pick<Project, 'id' | 'name' | 'created_at'>[];
+  const projects = (projectsResult?.data ?? []) as Pick<Project, 'id' | 'name' | 'created_at'>[];
 
   const counts = validations.reduce<Record<Verdict, number>>(
     (acc, v) => ({ ...acc, [v.verdict]: acc[v.verdict] + 1 }),

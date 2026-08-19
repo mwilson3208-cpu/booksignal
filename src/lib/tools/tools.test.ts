@@ -99,3 +99,22 @@ describe('series builder', () => {
     expect(buildSeries('stoicism', 4)).toEqual(buildSeries('stoicism', 4));
   });
 });
+
+describe('analysis coherence', () => {
+  it('gives stronger-ranking titles more reviews', () => {
+    const strong = analyzeBook('B00000001A')!;
+    const weak = analyzeBook('B00000002A')!;
+    const ranked = [strong, weak].sort((a, b) => a.bsr - b.bsr);
+    // Across a sample of ASINs, review count should correlate with rank strength.
+    const sample = Array.from({ length: 40 }, (_, i) =>
+      analyzeBook(`B${String(i).padStart(9, '0')}`),
+    ).filter(Boolean) as NonNullable<ReturnType<typeof analyzeBook>>[];
+    const top = sample.filter((b) => b.bsr < 10_000);
+    const bottom = sample.filter((b) => b.bsr > 100_000);
+    expect(top.length).toBeGreaterThan(0);
+    expect(bottom.length).toBeGreaterThan(0);
+    const avg = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;
+    expect(avg(top.map((b) => b.reviews))).toBeGreaterThan(avg(bottom.map((b) => b.reviews)));
+    expect(ranked[0].bsr).toBeLessThanOrEqual(ranked[1].bsr);
+  });
+});

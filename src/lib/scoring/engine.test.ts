@@ -227,3 +227,27 @@ describe('niche-down suggestions', () => {
     }
   });
 });
+
+describe('generated titles', () => {
+  it('keeps author-supplied capitalisation and drops punctuation', () => {
+    const acronym = generateMarketSnapshot('AI prompt engineering');
+    for (const competitor of acronym.competitors) {
+      expect(competitor.title).toContain('AI Prompt Engineering');
+      expect(competitor.title).not.toContain('Ai Prompt');
+    }
+
+    const messy = generateMarketSnapshot('  sourdough, baking!  ');
+    const clean = generateMarketSnapshot('Sourdough Baking');
+    expect(messy.competitors.map((c) => c.title)).toEqual(clean.competitors.map((c) => c.title));
+  });
+
+  it('keeps competing-title counts internally consistent', () => {
+    for (const topic of TOPICS) {
+      const snapshot = generateMarketSnapshot(topic);
+      for (const keyword of snapshot.relatedKeywords) {
+        // A narrower phrase must never look more crowded than its own parent topic.
+        expect(keyword.competingTitles).toBeLessThanOrEqual(snapshot.totalCompetingTitles);
+      }
+    }
+  });
+});

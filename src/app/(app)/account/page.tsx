@@ -58,7 +58,8 @@ export default async function AccountPage({
             <Row label="Name" value={profile.full_name ?? 'Not set'} />
             <Row
               label="Author level"
-              value={profile.author_level ? profile.author_level : 'Not set'}
+              value={profile.author_level ?? 'Not set'}
+              capitalize
             />
             <Row label="Member since" value={formatDate(profile.created_at)} />
           </CardContent>
@@ -124,11 +125,19 @@ export default async function AccountPage({
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function Row({
+  label,
+  value,
+  capitalize,
+}: {
+  label: string;
+  value: string;
+  capitalize?: boolean;
+}) {
   return (
     <div className="flex items-baseline justify-between gap-4">
-      <span className="text-muted-foreground">{label}</span>
-      <span className="truncate font-medium capitalize">{value}</span>
+      <span className="shrink-0 text-muted-foreground">{label}</span>
+      <span className={cn('truncate font-medium', capitalize && 'capitalize')}>{value}</span>
     </div>
   );
 }
