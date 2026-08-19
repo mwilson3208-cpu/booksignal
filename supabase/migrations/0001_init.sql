@@ -1,4 +1,4 @@
--- BookSignal initial schema.
+-- Book Demand Lab initial schema.
 -- Row level security is on for every table; a user only ever sees their own rows.
 
 create extension if not exists "pgcrypto";

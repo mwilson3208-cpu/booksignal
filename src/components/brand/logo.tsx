@@ -20,11 +20,35 @@ export function LogoMark({ className }: { className?: string }) {
   );
 }
 
-export function Logo({ className, href = '/' }: { className?: string; href?: string }) {
+/**
+ * The wordmark never wraps. `compact` is for the 256px app sidebar, where a
+ * multi-word name would otherwise break across two lines and push the header
+ * out of alignment — including for anyone whose browser falls back from Inter.
+ */
+export function Logo({
+  className,
+  href = '/',
+  size = 'default',
+}: {
+  className?: string;
+  href?: string;
+  size?: 'default' | 'compact';
+}) {
   return (
-    <Link href={href} className={cn('inline-flex items-center gap-2.5', className)}>
-      <LogoMark />
-      <span className="text-lg font-semibold tracking-tight">{BRAND.name}</span>
+    <Link
+      href={href}
+      className={cn('inline-flex min-w-0 items-center gap-2.5', className)}
+      aria-label={BRAND.name}
+    >
+      <LogoMark className={size === 'compact' ? 'h-7 w-7' : undefined} />
+      <span
+        className={cn(
+          'whitespace-nowrap font-semibold tracking-tight',
+          size === 'compact' ? 'text-[15px]' : 'text-lg',
+        )}
+      >
+        {BRAND.name}
+      </span>
     </Link>
   );
 }

@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 /**
  * Placeholder copy, written in-house and marked as such.
  *
- * BookSignal has no customers yet, so there are no real quotes to run. Presenting
+ * Book Demand Lab has no customers yet, so there are no real quotes to run. Presenting
  * invented ones as genuine would be a lie on a page whose entire pitch is "trust the
  * number" — so the section ships labelled, ready for real quotes to replace these.
  * Swap the array and delete the badge once you have them.

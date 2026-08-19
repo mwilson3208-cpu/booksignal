@@ -97,7 +97,7 @@ export function AppSidebar({ children }: { children?: React.ReactNode }) {
     <>
       {/* Mobile top bar */}
       <div className="sticky top-0 z-40 flex h-14 items-center justify-between border-b bg-background px-4 lg:hidden">
-        <Logo href="/dashboard" />
+        <Logo href="/dashboard" size="compact" />
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
@@ -119,7 +119,7 @@ export function AppSidebar({ children }: { children?: React.ReactNode }) {
       {/* Desktop sidebar */}
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r bg-background lg:flex">
         <div className="flex h-16 shrink-0 items-center border-b px-5">
-          <Logo href="/dashboard" />
+          <Logo href="/dashboard" size="compact" />
         </div>
         {nav}
         {children && <div className="border-t p-4">{children}</div>}

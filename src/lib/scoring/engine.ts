@@ -12,7 +12,7 @@ import { estimateMonthlySalesFromBsr, royaltyPerSale, royaltyRate } from './bsr'
 import { clamp, linearScale, logScale, median, round, roundToPricePoint } from './math';
 
 /**
- * BookSignal scoring engine, v1.
+ * Book Demand Lab scoring engine, v1.
  *
  * Fully deterministic: the score is a pure function of the market snapshot. No model
  * call, no randomness, no clock. The same snapshot always produces the same number,

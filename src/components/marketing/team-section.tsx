@@ -33,7 +33,7 @@ export function TeamSection() {
           <span className="eyebrow">About</span>
           <h2 className="h2 mt-3 text-balance">Built by people who wrote the wrong book first</h2>
           <p className="lede mt-4">
-            BookSignal exists because the expensive part of publishing is not the writing. It is
+            Book Demand Lab exists because the expensive part of publishing is not the writing. It is
             spending six months on a topic nobody was looking for.
           </p>
           <Badge variant="muted" className="mt-4">

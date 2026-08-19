@@ -1,4 +1,4 @@
-# BookSignal
+# Book Demand Lab
 
 Book topic validation for self-publishers. Type a topic, get a 0-100 score broken into
 demand, competition and profit potential, and a **GO**, **MAYBE** or **SKIP** verdict
@@ -132,7 +132,7 @@ npm run build       # production build
 npm run typecheck   # tsc --noEmit
 npm run lint        # next lint
 npm test            # vitest
-npm run demo        # single-file static demo -> demo/dist/booksignal-demo.html
+npm run demo        # single-file static demo -> demo/dist/book-demand-lab-demo.html
 ```
 
 ## The static demo

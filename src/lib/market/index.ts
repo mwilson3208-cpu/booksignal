@@ -11,7 +11,7 @@ export interface MarketProvider {
 
 const mockProvider: MarketProvider = {
   id: 'mock',
-  label: 'BookSignal sample data (v1)',
+  label: 'Book Demand Lab sample data (v1)',
   async getSnapshot(topic: string) {
     return generateMarketSnapshot(topic, new Date().toISOString());
   },

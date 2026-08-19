@@ -39,7 +39,7 @@ export async function GET(_request: Request, { params }: { params: { id: string 
   }
 
   const buffer = await renderToBuffer(<ReportDocument report={validation.report} />);
-  const filename = `booksignal-${slugify(validation.topic) || 'report'}.pdf`;
+  const filename = `book-demand-lab-${slugify(validation.topic) || 'report'}.pdf`;
 
   return new NextResponse(new Uint8Array(buffer), {
     headers: {

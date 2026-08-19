@@ -37,6 +37,7 @@ export function CreditMeter({
         />
       </div>
 
+      {/* Two deliberate lines rather than one that orphans the date at narrow widths. */}
       <p className="tnum mt-2 text-xs text-muted-foreground">
         {exhausted ? (
           <>No validations left this cycle</>
@@ -46,7 +47,9 @@ export function CreditMeter({
             {usage.remaining === 1 ? '' : 's'} left
           </>
         )}
-        {' · resets '}
+      </p>
+      <p className="tnum text-xs text-muted-foreground">
+        Resets{' '}
         {new Date(usage.periodEnd).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
       </p>
 

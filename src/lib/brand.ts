@@ -1,12 +1,12 @@
 export const BRAND = {
-  name: 'BookSignal',
+  name: 'Book Demand Lab',
   tagline: 'Validate the topic before you write the book.',
   description:
-    'BookSignal scores any book topic on demand, competition and profit potential, then gives you a GO, MAYBE or SKIP verdict backed by a formula you can read.',
-  supportEmail: 'support@booksignal.app',
+    'Book Demand Lab scores any book topic on demand, competition and profit potential, then gives you a GO, MAYBE or SKIP verdict backed by a formula you can read.',
+  supportEmail: 'support@bookdemandlab.com',
   /** Shown in the footer and on every report. Non-negotiable. */
   amazonDisclaimer:
-    'BookSignal is an independent tool and is not affiliated with, endorsed by, or sponsored by Amazon.com, Inc. or any of its subsidiaries. Amazon, Kindle, KDP and Amazon Best Sellers Rank are trademarks of Amazon.com, Inc. Sales and revenue figures are estimates derived from publicly observable ranking data, not reported sales.',
+    'Book Demand Lab is an independent tool and is not affiliated with, endorsed by, or sponsored by Amazon.com, Inc. or any of its subsidiaries. Amazon, Kindle, KDP and Amazon Best Sellers Rank are trademarks of Amazon.com, Inc. Sales and revenue figures are estimates derived from publicly observable ranking data, not reported sales.',
 } as const;
 
 export const TOOLS = [

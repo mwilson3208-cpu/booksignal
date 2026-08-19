@@ -406,7 +406,7 @@ export function ReportDocument({ report }: { report: ValidationReport }) {
           <Text>{BRAND.amazonDisclaimer}</Text>
           <Text style={{ marginTop: 4 }}>
             {report.market.source === 'mock'
-              ? 'Generated from BookSignal sample data, not a live marketplace feed.'
+              ? 'Generated from Book Demand Lab sample data, not a live marketplace feed.'
               : `Data source: ${report.market.source}.`}{' '}
             Report generated {generated} by {BRAND.name}.
           </Text>

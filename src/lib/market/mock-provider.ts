@@ -10,7 +10,7 @@ import { createRng, displayTopic, hashString, normalizeTopic, type Rng } from '.
 /**
  * v1 market data layer: a deterministic mock.
  *
- * BookSignal v1 ships against generated marketplace data rather than a live feed. The
+ * Book Demand Lab v1 ships against generated marketplace data rather than a live feed. The
  * generator is seeded from the normalized topic string, so a topic always returns the
  * same snapshot — which is what lets the scoring engine be reproducible and testable.
  * Every surface that renders a mock snapshot is labelled as sample data in the UI.
@@ -200,10 +200,20 @@ function buildCategories(rng: Rng, marketHeat: number): CategorySuggestion[] {
   }));
 }
 
+/**
+ * Namespace prefixed onto every seed.
+ *
+ * FROZEN. This string is an input to the hash, so changing it changes every generated
+ * market and therefore every score the product has ever shown. It is deliberately not
+ * derived from the brand name: renaming the product must not silently re-roll the data.
+ * Bump it only as a considered recalibration, alongside the engine version.
+ */
+const SEED_NAMESPACE = 'booksignal:v1';
+
 /** Builds the full deterministic snapshot for a topic. */
 export function generateMarketSnapshot(topic: string, retrievedAt?: string): MarketSnapshot {
   const normalized = normalizeTopic(topic);
-  const rng = createRng(`booksignal:v1:${normalized}`);
+  const rng = createRng(`${SEED_NAMESPACE}:${normalized}`);
 
   // Two independent 0-1 dials shape the market, drawn from separate hashes of the topic.
   //   heat  — how crowded the shelf is: title supply, review walls, publisher mix.

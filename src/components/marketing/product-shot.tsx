@@ -29,7 +29,7 @@ export function ProductShot({ className }: { className?: string }) {
         <span className="h-2.5 w-2.5 rounded-full bg-border" />
         <span className="h-2.5 w-2.5 rounded-full bg-border" />
         <div className="ml-3 truncate rounded-md bg-background px-3 py-1 text-xs text-muted-foreground">
-          booksignal.app/tools/topic-explorer
+          bookdemandlab.com/tools/topic-explorer
         </div>
       </div>
 
