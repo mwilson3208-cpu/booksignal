@@ -15,6 +15,10 @@ import { PricingSection } from '@/components/marketing/pricing-table';
 import { TeamSection } from '@/components/marketing/team-section';
 import { Faq } from '@/components/marketing/faq';
 import { FinalCta } from '@/components/marketing/final-cta';
+import AboutPage from '@/app/(marketing)/about/page';
+import TermsPage from '@/app/(marketing)/legal/terms/page';
+import PrivacyPage from '@/app/(marketing)/legal/privacy/page';
+import DisclaimerPage from '@/app/(marketing)/legal/disclaimer/page';
 
 import { AppSidebar } from '@/components/app/app-sidebar';
 import { CreditMeter } from '@/components/app/credit-meter';
@@ -45,20 +49,31 @@ import type { ValidationReport } from '@/lib/types';
 /* Hash routing                                                               */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * A hash that starts with "/" names a route; anything else ("#pricing") is a same-page
+ * anchor and leaves the landing page mounted so the browser can scroll to it.
+ */
+function readRoute(): string {
+  if (typeof window === 'undefined') return '/';
+  const hash = window.location.hash.slice(1);
+  if (!hash.startsWith('/')) return '/';
+  return hash.split('?')[0] || '/';
+}
+
 function useHashRoute() {
-  const [route, setRoute] = useState(() =>
-    typeof window === 'undefined' ? '/' : window.location.hash.slice(1) || '/',
-  );
+  const [route, setRoute] = useState(readRoute);
   useEffect(() => {
     const onChange = () => {
-      setRoute(window.location.hash.slice(1) || '/');
-      if (!window.location.hash.includes('#/')) return;
-      window.scrollTo({ top: 0 });
+      const next = readRoute();
+      setRoute((current) => {
+        if (current !== next) window.scrollTo({ top: 0 });
+        return next;
+      });
     };
     window.addEventListener('hashchange', onChange);
     return () => window.removeEventListener('hashchange', onChange);
   }, []);
-  return route.split('?')[0] || '/';
+  return route;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -94,6 +109,31 @@ function DemoBanner() {
 /* -------------------------------------------------------------------------- */
 /* Marketing                                                                  */
 /* -------------------------------------------------------------------------- */
+
+/** Mirrors the marketing layout so a sub-page keeps the site chrome. */
+function MarketingPage({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex min-h-screen flex-col">
+      <DemoBanner />
+      <SiteHeader />
+      <main className="flex-1">{children}</main>
+      <SiteFooter />
+    </div>
+  );
+}
+
+/** Mirrors (marketing)/legal/layout.tsx, which the demo does not run. */
+function LegalPage({ children }: { children: React.ReactNode }) {
+  return (
+    <MarketingPage>
+      <div className="container py-16 sm:py-24">
+        <article className="mx-auto max-w-3xl [&_h1]:text-4xl [&_h1]:font-semibold [&_h1]:tracking-tight [&_h2]:mt-10 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:tracking-tight [&_li]:mt-2 [&_p]:mt-4 [&_p]:leading-relaxed [&_p]:text-muted-foreground [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:text-muted-foreground">
+          {children}
+        </article>
+      </div>
+    </MarketingPage>
+  );
+}
 
 function Landing() {
   return (
@@ -286,6 +326,10 @@ export function App() {
   const route = useHashRoute();
 
   if (route === '/' || route === '') return <Landing />;
+  if (route === '/about') return <MarketingPage><AboutPage /></MarketingPage>;
+  if (route === '/legal/terms') return <LegalPage><TermsPage /></LegalPage>;
+  if (route === '/legal/privacy') return <LegalPage><PrivacyPage /></LegalPage>;
+  if (route === '/legal/disclaimer') return <LegalPage><DisclaimerPage /></LegalPage>;
 
   const reportMatch = route.match(/^\/tools\/topic-explorer\/(.+)$/);
   if (reportMatch) {
